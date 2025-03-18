@@ -5,9 +5,9 @@ class professorModel {
 
    static async criar(matricula, nome, email, senha) {
       const dados = [matricula, nome, email, senha]
-      const consulta = `insert into professor(matricula, nome, email, senha) values ($1, $2, $3, $4) returning *`
+      const consulta = `insert into professor(matricula, nome, email, senha) values ($1, $2, $3, $4) returning *`;
       const novoProfessor = await pool.query(consulta,dados)
-      return novoProfessor.rows
+      return novoProfessor.rows;
 
    }
 
@@ -19,7 +19,7 @@ class professorModel {
    }
 
   static async listar() {
-     const consulta = `select from * aluno `
+     const consulta = `select from * professor `
      const professores = await pool.query(consulta)
      return professores.rows
 
@@ -30,14 +30,15 @@ class professorModel {
    const dados = [matricula]
    const consulta = ` select * from professor where matricula = $1 `
    const professor = await pool.query(dados,consulta)
-   return professor.rows   
+   return professor.rows;   
    
    }
 
    static async excluirPorID(matricula) {
    const dados = [matricula]
-   const consulta = ` delete * from professor where matricula = $1 `
-   const professor = await pool.query(dados,consulta)
+   const consulta = ` delete * from professor where matricula = $1 returning *`;
+   const professorExcluido = await pool.query(dados,consulta);
+   return professorExcluido.rows;
    
  
    }
@@ -52,5 +53,7 @@ class professorModel {
 
 
 }
+
+
 
 module.exports = professorModel

@@ -40,4 +40,6 @@ class AlunoModel {
     }
 }
 
+
+
 module.exports = AlunoModel
