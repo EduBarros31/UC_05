@@ -21,14 +21,14 @@ class AlunoModel {
         return alunos.rows
     }
 
-    static async listarPorID(matricula) {
+    static async listarPorMatricula(matricula) {
         const dados = [matricula]
         const consulta = `select * from aluno where matricula = $1`
         const aluno = await pool.query(consulta, dados)
         return aluno.rows
     }
 
-    static async excluirPorID(matricula) {
+    static async excluirPorMatricula(matricula) {
         const dados = [matricula]
         const consulta = `delete from aluno where matricula = $1`
         await pool.query(consulta, dados)

@@ -62,18 +62,6 @@ class professorControler {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+
+module.exports = professorControler
