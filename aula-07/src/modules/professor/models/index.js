@@ -15,18 +15,18 @@ class professorModel {
      const dados = [matricula, nome, email, senha]
      const consulta = `update set nome= $2, email = $3, senha = $4 where matricula = $1 returning *`
      const professorAtualizado = await pool.query(consulta, dados)
-     return professorAtualizado.rows
+     return professorAtualizado.rows;
    }
 
   static async listar() {
      const consulta = `select from * professor `
      const professores = await pool.query(consulta)
-     return professores.rows
+     return professores.rows;
 
     
    }
 
-   static async listarPorID(matricula) {
+   static async listarPorMatricula(matricula) {
    const dados = [matricula]
    const consulta = ` select * from professor where matricula = $1 `
    const professor = await pool.query(dados,consulta)
@@ -34,7 +34,7 @@ class professorModel {
    
    }
 
-   static async excluirPorID(matricula) {
+   static async excluirPorMatricula(matricula) {
    const dados = [matricula]
    const consulta = ` delete * from professor where matricula = $1 returning *`;
    const professorExcluido = await pool.query(dados,consulta);
@@ -43,7 +43,7 @@ class professorModel {
  
    }
 
-   static async excluir() {
+   static async excluirTodos() {
    const consulta = `delete from * professor`
    await pool.query(consulta)
 

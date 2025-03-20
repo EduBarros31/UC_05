@@ -26,8 +26,8 @@ class AlunoController{
     static async editar(requisicao, resposta){
         try {
             const matricula = requisicao.params.matricula
-            const aluno = await AlunoModel.editar(matricula,nome, email, senha)
-            if(aluno.length === 0){
+            const { nome, email, senha } = requisicao.body;
+            if( !nome || !email || !senha){
                 return resposta.status(400).json({menssagem:"Erro ao editar", erro: error.message})
             }
            resposta.status(200).json({mensagem:"Aluno atualizado com sucesso", Erro: error.message})
@@ -61,8 +61,8 @@ class AlunoController{
     static async listarPorMatricula(requisicao, resposta){
         try {
             const matricula = requisicao.params.matricula
-            const aluno = await AlunoModel.listarPorID(matricula)
-            if(!aluno){
+            const aluno = await AlunoModel.listarPorMatricula(matricula)
+            if(!aluno === 0){
                 return resposta.status(400).json({mensagem:"Aluno não encontrado!"})
             }
             resposta.status(200).json(aluno)
@@ -78,33 +78,42 @@ class AlunoController{
         try {
             await AlunoModel.excluirTodos()
             resposta.status(200).json({mensagem:" Erro ao excluir todos", erro: error.message })
+
         } catch (error) {
-            
+            resposta.status(500).json({
+                mensagem: "Erro ao excluir todos os alunos!",
+                erro: error.message,
+              });
+            }
+
+
         }
         
-    }
+    
 
 
 
 
-    static async excluirPorMatricula(requisicao, resposta){
+    static async excluirPorMatricula(requisicao, resposta) {
        try {
         const matricula = requisicao.params.matricula
         const aluno = await AlunoModel.listarPorMatricula(matricula)
-        if(!aluno)
+        if(!aluno){
          return resposta.status(400).json({mensagem:"Erro ao excluir por matricula", erro: error.message})
        
        } 
-      
-
-       catch (error) {
-          resposta.status(500).json({})
-       }
- 
- 
+       await AlunoModel.excluirPorMatricula(matricula);
+       resposta.status(200).json({ mensagem: "Aluno excluido com sucesso!" });
     }
-}
+       catch (error) {
+          resposta.status(500).json({ mensagem: "Erro ao excluir Aluno!", erro: error.message})
+       }
+    
+    }
 
+
+
+    }
 
 
 module.exports = AlunoController

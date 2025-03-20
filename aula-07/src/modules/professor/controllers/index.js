@@ -40,7 +40,7 @@ class professorControler {
 
 
 
-    static async listarTodos(requisicao, resposta){
+    static async listar(requisicao, resposta){
         try {
             const professores = await professorModel.listar()
             if(professores.length === 0){
@@ -59,9 +59,9 @@ class professorControler {
 
     static async listarPorMatricula(requisicao,resposta){
       try {
-        const matricula = requisicao.params.id
+        const matricula = requisicao.params.matricula
         const professor = await professorModel.listarPorMatricula(matricula)
-        if(!professor){
+        if(!professor.length){
             return resposta.status(400).json({mensagem:"Professor não encontrado!"})
         }
         resposta.status(200).json(professor)
@@ -75,11 +75,31 @@ class professorControler {
 
 
 
+
+
+
+
+
+    static async excluirTodos(requisicao, resposta) {
+        try {
+            await professorModel.excluirTodos();
+            resposta.status(200).json({ mensagem: "Todos os professores foram excluídos com sucesso." });
+        } catch (error) {
+            resposta.status(500).json({ mensagem: "Erro ao excluir todos os professores.", erro: error.message });
+        }
+    }
+    
+
+
+
+
+
+
   
    static async excluirPorMatricula(requisicao, resposta) {
     try {
 
-        const matricula = requisicao.params.id;
+        const matricula = requisicao.params.matricula;
         const professorExcluido = await professorModel.excluirPorMatricula(matricula);
         if (!professorExcluido.length) {
             return resposta.status(400).json({ mensagem: "Professor não encontrado." });
@@ -95,18 +115,8 @@ class professorControler {
 
 
 
-   static async excluirTodos(requisicao, resposta) {
-    try {
-        await professorModel.excluirTodos();
-        resposta.status(200).json({ mensagem: "Todos os professores foram excluídos com sucesso." });
-    } catch (error) {
-        resposta.status(500).json({ mensagem: "Erro ao excluir todos os professores.", erro: error.message });
-    }
 }
 
 
-
-
-}
 
 module.exports = professorControler
