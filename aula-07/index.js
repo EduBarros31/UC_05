@@ -1,6 +1,6 @@
 const express = require("express")
 const dotenv =  require("dotenv")
-const alunoRoutes = require("./src/module/aluno/routes/index")
+const alunoRoutes = require("./src/modules/aluno/routes/index")
 
 
 dotenv.config();
@@ -13,14 +13,7 @@ app.use(express.json())
 
 app.use(alunoRoutes);
 
-app.use((requisicao, resposta) => {
-    resposta.status(404).json({ error: "Rota não encontrada" });
-});
 
-app.use((erro, requisicao, resposta) => {
-    console.error(erro.stack);
-    resposta.status(500).json({ erro: "Erro interno do servidor" });
-});
 
 
 
