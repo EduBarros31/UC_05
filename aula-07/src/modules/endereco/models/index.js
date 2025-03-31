@@ -96,7 +96,24 @@ static async editarEndereco(matricula){
 
 
 
+
+static async excluirEndereco(matricula){
+    const dados = [matricula]
+    const consulta = `delete from endereco where matricula = $1`
+    await pool.query(consulta,dados)
+
+
 }
 
+
+static async excluirTodos(){
+    const consulta = `delete from endereco`
+    await pool.query(consulta)
+
+
+}
+
+
+}
 
 module.exports = EnderecoModel
