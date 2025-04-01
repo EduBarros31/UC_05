@@ -1,22 +1,24 @@
 const EnderecoModel = require('../models/index')
 
 
-class EnderecoController{
+class EnderecoController {
   static async criar(req,res) {
    try {
-     const { matricula,cep,numero,ponto_referencia } = req.body
-     if(!matricula || !cep || !numero || !ponto_referencia){
+     const { matricula,cep,numero, ponto_referencia } = req.body
+     if(!matricula || cep|| !numero){
        return res.status(400).json({mensagem:"Todos os campos devem ser fornecidos!"})
      }
-     const novoEndereco = await EnderecoModel.criarEndereco(matricula,cep,numero,ponto_referencia)     
-     res.status(201).json({mensagem:"Endereco criado com sucesso",endereco: novoEndereco})
+        const novoEndereco = await EnderecoModel.criarEndereco(matricula,cep,numero,ponto_referencia)
+        res.status(201).json(novoEndereco) 
 
-   } catch (error) {
-      res.status(500).json({mensagem:"Erro ao criar o endereco!", erro: error.message})
+     } 
+     
+    catch (error) {
+      res.status(500).json({mensagem:"Erro interno do servidor", erro: error.message})
     
    }
 
-
+  
   }
 
 
@@ -65,7 +67,7 @@ class EnderecoController{
 
   static async listarEnderecoCEP(req, res){
     try {
-      const cep = req.params.cep
+      const cep = req.params.cep // e necessario passar o cep na url
       const endereco = await EnderecoModel.listarEnderecoCEP(cep)
       if(endereco.length === 0){
         return res.status(400).json({mensagem:"Endereco não encontrado!"})
@@ -100,25 +102,20 @@ class EnderecoController{
 
 
 
-
-
-
-
-
    
-  static async editar(req,res) {
+  static async editarEndereco(req,res) {
     try {
       const matricula = req.params.matricula
       const { cep,numero,ponto_referencia } = req.body
-      if(!cep || !numero || !ponto_referencia){
+      if(!cep || !numero){
         return res.status(400).json({mensagem:"Pelo menos um campo atualizado"})
       }
-      const enderecoAtualizado = await EnderecoModel.editarEndereco(matricula,cep,numero,ponto_referencia)
-      if(!enderecoAtualizado){
-        return res.status(400).json({mensagem:"Endereco não encontrado"})
+      const endereco = await EnderecoModel.editarEndereco(matricula,cep,numero,ponto_referencia)
+      if(endereco.length === 0){
+        return res.status(404).json({mensagem:"Endereco não encontrado"})
       }
 
-      res.status(200).json({mensagem:"Endereco atualizado com sucesso", endereco: enderecoAtualizado}) 
+      res.status(200).json({mensagem:"Endereco atualizado com sucesso", endereco: endereco}) 
 
     } catch (error) {
 
@@ -130,39 +127,6 @@ class EnderecoController{
 
 
 
-
-static async excluirEndereco(req, res){
-  try {
-    const matricula = req.params.matricula
-    const enderecoExcluido = await EnderecoModel.excluirEndereco(matricula)
-    if(!enderecoExcluido){
-      return res.status(400).json({mensagem:"Endereco não encontrado!"})
-    }
-    res.status(200).json({mensagem:"Endereco excluido com sucesso", endereco: enderecoExcluido})
-
-  } catch (error) {
-    res.status(500).json({mensagem:"Erro ao excluir o endereco!", erro: error.message})
-  }
-
-
-
-}
-
-
-
-
-
-  
-  static async excluirTodos(req, res){
-    try {
-      await EnderecoModel.excluirTodos()
-      res.status(200).json({mensagem:"Todos os enderecos excluidos"})
-
-    } catch (error) {
-      res.status(500).json({mensagem:"Erro ao excluir todos os enderecos!", erro: error.message})
-  }
-
-}
 
 
 

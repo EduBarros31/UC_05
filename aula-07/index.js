@@ -1,6 +1,7 @@
 const express = require("express")
 const dotenv =  require("dotenv")
-const alunoRoutes = require("./src/modules/aluno/routes/index")
+const routerAluno = require("./src/modules/aluno/routes/index")
+const routerEndereco = require("./src/modules/endereco/routes")
 
 
 dotenv.config();
@@ -11,7 +12,12 @@ const app = express();
 
 app.use(express.json())
 
-app.use(alunoRoutes);
+
+
+app.use(routerAluno);
+
+
+app.use(routerEndereco);
 
 
 

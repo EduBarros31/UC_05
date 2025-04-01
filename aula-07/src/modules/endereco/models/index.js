@@ -58,7 +58,7 @@ class EnderecoModel {
 
    static async listarEndereco(matricula){ 
     const dados = [matricula]
-    const consulta = `select aluno.* endereco.* from aluno join endereco on aluno.matricula = endereco.matricula
+    const consulta = `select aluno.matricula, aluno.endereco, endereco on aluno.matricula = endereco.matricula
     where matricula = $1`
     const resultado = pool.query(consulta,dados)
     return resultado.rows
@@ -79,15 +79,15 @@ class EnderecoModel {
  }
 
    static async listarEnderecoPorCidade(cidade){
-   const dados = [cidade]
-   const consulta = `select * from where cidade = $1`
+   const dados = [`%${cidade}%`]
+   const consulta = `select * from  endereco where lower (localidade) like lower($1)`
    const resultado = await pool.query(consulta,dados)
    return resultado.rows
 
 }
 
-static async editarEndereco(matricula){ 
-   const resposta = resposta 
+static async editarEndereco(matricula, cep,numero, ponto_referencia){ 
+   const resposta = [matricula, cep,numero, ponto_referencia]
    const consulta = `update endereco set cep = $2, logradouro = $3, numero = $4, bairro = $5, complemento = $6, uf = $7, localidade = $8, ponto_referencia = $9 where matricula = $1 reurning *`
    
    const resultado = await pool.query(consulta,resposta)
