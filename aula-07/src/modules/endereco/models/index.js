@@ -9,15 +9,15 @@ class EnderecoModel {
 
     static async criarEndereco(matricula,cep,numero,ponto_referencia){
         const resposta = await axios.get(`https://viacep.com.br/ws/${cep}/json/`)
-        // const logradouro = resposta.data.logradouro
-        // const complemento = resposta.data.complemento
-        // const bairro = resposta.data.bairro
-        // const localidade = resposta.data.localidade
-        // const uf = resposta.data.uf
+        const logradouro = resposta.data.logradouro
+        const complemento = resposta.data.complemento
+        const bairro = resposta.data.bairro
+        const localidade = resposta.data.localidade
+        const uf = resposta.data.uf
       
 
 
-        const { logradouro, complemento, bairro, localidade, uf } = resposta.data
+        // const { logradouro, complemento, bairro, localidade, uf } = resposta.data
        // forma 
 
 
@@ -27,39 +27,44 @@ class EnderecoModel {
           cep,
           logradouro,
           numero,
-          bairro,
           complemento,
-          uf,
+          bairro,
           localidade,
+          uf,
           ponto_referencia
 
     ]
 
    
 
-        const consulta = `insert into endereco(matricula,cep,logradouro,numero,bairro,complemento,uf,localidade,ponto_referencia) 
+        const consulta = `insert into endereco(matricula,cep,logradouro,numero,complemento,bairro,localidade,uf,ponto_referencia) 
         values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning * `
     
 
-        const resultado = pool.query(consulta,dados)
+        const resultado = await pool.query(consulta,dados)
         return resultado.rows
     }
 
 
 
 
-    static async listarEnderecos(cep){ 
-       const dados =[cep] 
-       const consulta = `select * from where cep = $1`
-       const resultado = await pool.query(consulta,dados)
+
+
+    static async listarEnderecos(){ 
+      
+       const consulta = `select * from endereco`
+       const resultado = await pool.query(consulta)
        return resultado.rows
     }
 
 
+
+
+
    static async listarEndereco(matricula){ 
     const dados = [matricula]
-    const consulta = `select aluno.matricula, aluno.endereco, endereco on aluno.matricula = endereco.matricula
-    where matricula = $1`
+    const consulta = `select aluno*, endereco.* from aluno join 
+    endereco on aluno.matricula = endereco.matricula where aluno.matricula = $1`
     const resultado = pool.query(consulta,dados)
     return resultado.rows
 
@@ -67,7 +72,19 @@ class EnderecoModel {
 
    }
 
+
+
+
    
+   static async litstarEnderecoAluno(matricula){
+    const dados = [matricula]
+    const consulta = `select * from endereco where matricula = $1`
+    const resultado = await pool.query(consulta, dados)
+    return resultado.rows
+}
+
+   
+
   
 
    static async listarEnderecoCEP(CEP){
@@ -78,6 +95,11 @@ class EnderecoModel {
 
  }
 
+
+
+
+
+
    static async listarEnderecoPorCidade(cidade){
    const dados = [`%${cidade}%`]
    const consulta = `select * from  endereco where lower (localidade) like lower($1)`
@@ -86,32 +108,29 @@ class EnderecoModel {
 
 }
 
+
+
+
+
+
+
+
 static async editarEndereco(matricula, cep,numero, ponto_referencia){ 
-   const resposta = [matricula, cep,numero, ponto_referencia]
-   const consulta = `update endereco set cep = $2, logradouro = $3, numero = $4, bairro = $5, complemento = $6, uf = $7, localidade = $8, ponto_referencia = $9 where matricula = $1 reurning *`
-   
-   const resultado = await pool.query(consulta,resposta)
-    return resultado.rows
-}
+    const resposta = await axios.get[`https://viacep.com.br/ws/${cep}/json/`]
+    const logradouro = resposta.data.logradouro
+    const complemento = resposta.data.complemento   
+    const bairro = resposta.data.bairro
+    const localidade = resposta.data.localidade
+    const uf = resposta.data.uf
+
+    const dados = [matricula,cep,logradouro,numero,complemento,bairro,localidade,uf,ponto_referencia]
 
 
-
-
-static async excluirEndereco(matricula){
-    const dados = [matricula]
-    const consulta = `delete from endereco where matricula = $1`
-    await pool.query(consulta,dados)
-
-
-}
-
-
-static async excluirTodos(){
-    const consulta = `delete from endereco`
-    await pool.query(consulta)
-
-
-}
+    const consulta = `update endereco set cep = $2, logradouro = $3, numero = $4, bairro = $5, complemento = $6, uf = $7, localidade = $8, ponto_referencia = $9 where matricula = $1 returning *`
+    
+    const resultado = await pool.query(consulta,dados)
+     return resultado.rows
+ }
 
 
 }

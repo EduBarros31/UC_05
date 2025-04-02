@@ -2,7 +2,7 @@ const EnderecoModel = require('../models/index')
 
 
 class EnderecoController {
-  static async criar(req,res) {
+  static async criarEndereco(req,res) {
    try {
      const { matricula,cep,numero, ponto_referencia } = req.body
      if(!matricula || cep|| !numero){
@@ -61,7 +61,25 @@ class EnderecoController {
   }
 
 
-  
+   
+  static async litstarEnderecoAluno(req, res){
+    try {
+        const matricula = req.params.matricula
+        const endereco = await EnderecoModel.litstarEnderecoAluno(matricula)
+        if (endereco.length === 0) {
+            return res.status(404).json({ msg: "Endereço não encontrado" })
+        }
+        res.status(200).json(endereco)
+    } catch (error) {
+        res.status(500).json({msg: "Erro interno do servidor. Por favor tente mais tarde!", erro: error.message})
+    }
+}
+
+
+
+
+
+
 
 
 
@@ -102,6 +120,8 @@ class EnderecoController {
 
 
 
+
+  
    
   static async editarEndereco(req,res) {
     try {
@@ -124,6 +144,10 @@ class EnderecoController {
 
 
  }
+
+
+
+
 
 
 
